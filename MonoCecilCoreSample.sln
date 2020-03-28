@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoCecilCoreSample", "MonoCecilCoreSample\MonoCecilCoreSample.csproj", "{626BB5F0-25E5-4060-A61E-B843CAF2615D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoCecilCoreSample.Subject", "MonoCecilCoreSample.Subject\MonoCecilCoreSample.Subject.csproj", "{225B6010-CD83-44A5-A678-6F59A78E0B13}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{626BB5F0-25E5-4060-A61E-B843CAF2615D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{626BB5F0-25E5-4060-A61E-B843CAF2615D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{626BB5F0-25E5-4060-A61E-B843CAF2615D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{626BB5F0-25E5-4060-A61E-B843CAF2615D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{225B6010-CD83-44A5-A678-6F59A78E0B13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{225B6010-CD83-44A5-A678-6F59A78E0B13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{225B6010-CD83-44A5-A678-6F59A78E0B13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{225B6010-CD83-44A5-A678-6F59A78E0B13}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
