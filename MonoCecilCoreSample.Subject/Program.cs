@@ -1,8 +1,8 @@
 ﻿using System;
 
 namespace MonoCecilCoreSample.Subject {
-    class Program {
-        static void Main(string[] args) {
+    public static class Program {
+        public static void Main(string[] args) {
             Console.WriteLine("Hello World!");
         }
     }
