@@ -14,24 +14,30 @@ namespace MonoCecilCoreSample {
         private const string CoreRefsPath = DotNetPath + PacksPath + @"Microsoft.NETCore.App.Ref\";
         private const string StandardRefsPath = DotNetPath + PacksPath + @"NETStandard.Library.Ref\";
 
+        public static string[] GetInstalledCoreRefsVersions() =>
+            GetInstalledRefsVersions(CoreRefsPath);
+        public static string[] GetInstalledStandardRefsVersions() =>
+            GetInstalledRefsVersions(StandardRefsPath);
         private static string[] GetInstalledRefsVersions(string baseRefPath) {
             var dir = Directory.GetDirectories(baseRefPath);
             return Array.ConvertAll(dir, d => Path.GetRelativePath(baseRefPath, d));
         }
 
-        public static string GetCoreAssemblyPath(string packVersion, string assemblyName) =>
-            GetReferenceAssemblyPath(CoreRefsPath, packVersion, assemblyName);
-        public static string GetStandardAssemblyPath(string packVersion, string assemblyName) =>
-            GetReferenceAssemblyPath(StandardRefsPath, packVersion, assemblyName);
+        public static string GetCoreAssemblyPath(string refVersion, string assemblyName) =>
+            GetReferenceAssemblyPath(CoreRefsPath, refVersion, assemblyName);
+        public static string GetStandardAssemblyPath(string refVersion, string assemblyName) =>
+            GetReferenceAssemblyPath(StandardRefsPath, refVersion, assemblyName);
 
-        private static string GetReferenceAssemblyPath(string baseRefPath, string coreVersion, string assemblyName) {
-            var frameworkList = Path.Combine(baseRefPath, coreVersion, @"data\FrameworkList.xml");
+        private static string GetReferenceAssemblyPath(string baseRefPath, string refVersion, string assemblyName) {
+            var frameworkList = Path.Combine(baseRefPath, refVersion, @"data\FrameworkList.xml");
 
             var xDocument = XDocument.Load(frameworkList);
             var (path, _) = xDocument.Descendants(@"File")
                 .Select(x => (path: x.Attribute(@"Path"), name: x.Attribute("AssemblyName")))
                 .FirstOrDefault(t => string.Equals(t.name.Value, assemblyName, StringComparison.InvariantCultureIgnoreCase));
-            return path?.Value;
+            return path == null
+                ? null
+                : Path.Combine(baseRefPath, refVersion, path.Value);//.Replace('/', '\\');
         }
         
         // Use dotnet tool to get sdk and runtime versions and paths

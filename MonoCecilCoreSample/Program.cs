@@ -9,7 +9,10 @@ using Mono.Cecil.Rocks;
 namespace MonoCecilCoreSample {
     public static class Program {
         public static void Main() {
-            // we are in ./MonoCecilCoreSample/bin/Debug/netcoreapp3.1/
+            // Get reference assemblies pack version. We will use it later for loading reference assemblies.  
+            var refVersion = SdkHelper.GetInstalledCoreRefsVersions().Last();
+            
+            // We are in ./MonoCecilCoreSample/bin/Debug/netcoreapp3.1/
             var subjectPath = @"../../../../MonoCecilCoreSample.Subject/bin/Debug/netcoreapp3.1/";
             Environment.CurrentDirectory = Path.GetFullPath(subjectPath);
             
@@ -67,7 +70,7 @@ namespace MonoCecilCoreSample {
             il.Append(il.Create(OpCodes.Ldarg_0));
 
             // get path to 'System.Runtime' reference assembly and obtain 'object' 'TypeDefinition' from it by name
-            var runtimeFileName = @"c:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\3.1.0\ref\netcoreapp3.1\System.Runtime.dll";
+            var runtimeFileName = SdkHelper.GetCoreAssemblyPath(refVersion, "System.Runtime");
             var runtimeDefinition = AssemblyDefinition.ReadAssembly(runtimeFileName);
             var systemObject = runtimeDefinition.MainModule.GetType(typeof(object).FullName);
 
@@ -108,7 +111,7 @@ namespace MonoCecilCoreSample {
             il.Append(il.Create(OpCodes.Ldstr, "Hello Modified World!"));
 
             // get path to 'System.Console' reference assembly and read it
-            var consoleFileName = @"c:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\3.1.0\ref\netcoreapp3.1\System.Console.dll";
+            var consoleFileName = SdkHelper.GetCoreAssemblyPath(refVersion, "System.Console");
             var consoleDefinition = AssemblyDefinition.ReadAssembly(consoleFileName);
 
             // get 'System.Console' type and 'Console.WriteLine(string)' method and import it
