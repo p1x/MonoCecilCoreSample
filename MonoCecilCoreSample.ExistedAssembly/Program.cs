@@ -5,8 +5,9 @@ using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using MonoCecilCoreSample.Shared;
 
-namespace MonoCecilCoreSample {
+namespace MonoCecilCoreSample.ExistedAssembly {
     public static class Program {
         public static void Main() {
             // Get reference assemblies pack version. We will use it later for loading reference assemblies.  

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace MonoCecilCoreSample {
+namespace MonoCecilCoreSample.Shared {
     public static class SdkHelper {
         // Search dotnet paths for reference assemblies
         // Paths based on info from https://docs.microsoft.com/en-us/dotnet/core/distribution-packaging
@@ -55,10 +55,11 @@ namespace MonoCecilCoreSample {
                 return null;
             
             var match = Regex.Match(sdkInfo, @"\[(?<path>.*)\]");
-            if (!match.Groups.TryGetValue("path", out var group))
+            var group = match.Groups.FirstOrDefault(x => x.Name == "path");
+            if (group == null)
                 return null;
             
-            var sdkBasePath = @group.Value;
+            var sdkBasePath = group.Value;
             return Path.Combine(sdkBasePath, sdkVersion);
         }
 
