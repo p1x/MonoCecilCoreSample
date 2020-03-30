@@ -76,7 +76,7 @@ namespace MonoCecilCoreSample.NewAssembly {
             // define the new 'Main' method and add it to our new 'Program' type
             // once again, use 'TypeSystem' to avoid importing anything
             var mainMethod = new MethodDefinition(
-                "MainModified",
+                "Main",
                 MethodAttributes.Public | MethodAttributes.Static,
                 module.TypeSystem.Void
             );
@@ -120,6 +120,75 @@ namespace MonoCecilCoreSample.NewAssembly {
             il.Append(il.Create(OpCodes.Nop));
             il.Append(il.Create(OpCodes.Ret));
 
+            // add assembly attributes
+            // add [assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
+            var runtimeCompatibilityAttribute = runtimeDefinition.MainModule.GetType(
+                typeof(System.Runtime.CompilerServices.RuntimeCompatibilityAttribute).FullName
+            );
+            assembly.CustomAttributes.Add(
+                new CustomAttribute(
+                    assembly.MainModule.ImportReference(
+                        runtimeCompatibilityAttribute.GetConstructors().First(x => !x.HasParameters)
+                    )
+                ) {
+                    Properties = {
+                        new CustomAttributeNamedArgument(
+                            nameof(System.Runtime.CompilerServices.RuntimeCompatibilityAttribute.WrapNonExceptionThrows),
+                            new CustomAttributeArgument(
+                                assembly.MainModule.TypeSystem.Boolean,
+                                true
+                            )
+                        )
+                    }
+                }
+            );
+            
+            // add [assembly: Debuggable(DebuggableAttribute.DebuggingModes.Default | DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints | DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]
+            // Cecil uses different divider for nested types
+            var debuggingModeTypeName = typeof(DebuggableAttribute.DebuggingModes).FullName.Replace('+', '/');
+            assembly.CustomAttributes.Add(
+                new CustomAttribute(
+                    assembly.MainModule.ImportReference(
+                        runtimeDefinition.MainModule.GetType(typeof(DebuggableAttribute).FullName)
+                            .GetConstructors()
+                            .First(x =>
+                                x.Parameters.Count == 1 &&
+                                x.Parameters[0].ParameterType.FullName == debuggingModeTypeName
+                            )
+                    )
+                ) {
+                    ConstructorArguments = {
+                        new CustomAttributeArgument(
+                            runtimeDefinition.MainModule.GetType(debuggingModeTypeName),
+                            DebuggableAttribute.DebuggingModes.Default |
+                            DebuggableAttribute.DebuggingModes.DisableOptimizations |
+                            DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints
+                        )
+                    }
+                }
+            );
+            // add [assembly: TargetFramework(".NETCoreApp,Version=v3.1")]
+            assembly.CustomAttributes.Add(
+                new CustomAttribute(
+                    assembly.MainModule.ImportReference(
+                        runtimeDefinition.MainModule
+                            .GetType(typeof(System.Runtime.Versioning.TargetFrameworkAttribute).FullName)
+                            .GetConstructors()
+                            .First(x =>
+                                x.Parameters.Count == 1 &&
+                                x.Parameters[0].ParameterType.FullName == typeof(string).FullName
+                            )
+                    )
+                ) {
+                    ConstructorArguments = {
+                        new CustomAttributeArgument(
+                            assembly.MainModule.TypeSystem.String,
+                            ".NETCoreApp,Version=v3.1"
+                        )
+                    }
+                }
+            );
+            
             // create debug symbols:
             
             // define method scope
